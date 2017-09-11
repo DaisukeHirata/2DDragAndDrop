@@ -7,6 +7,8 @@ public class DropObject : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPo
     public Image image;
 	private Sprite nowSprite;
 	private Transform canvasTran;
+	private GameObject droppedObject;
+    private GameObject newConnector;
 
 	void Start()
 	{
@@ -28,33 +30,48 @@ public class DropObject : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPo
 
     private void moveRight(PointerEventData pointerEventData) 
     {
-		GameObject droppedObject = Instantiate(pointerEventData.pointerDrag);
-		Vector3 newDropppedObjectPosition = gameObject.transform.position;
-		newDropppedObjectPosition.x += 75;
-		droppedObject.transform.position = newDropppedObjectPosition;
-		droppedObject.transform.SetParent(canvasTran);
-		droppedObject.transform.SetAsLastSibling();
-		droppedObject.transform.localScale = Vector3.one;
-		droppedObject.GetComponent<Image>().color = Vector4.one * 0.6f;
+		droppedObject = Instantiate(pointerEventData.pointerDrag);
 
-		GameObject newConnector = Instantiate(gameObject);
-        Vector3 newConnectorPosition = gameObject.transform.position;
-        newConnectorPosition.x += 150;
-        newConnector.transform.position = newConnectorPosition;
-		newConnector.transform.SetParent(canvasTran);
-		newConnector.transform.SetAsLastSibling();
-		newConnector.transform.localScale = Vector3.one;
-		newConnector.GetComponent<Image>().color = Vector4.one;
+		DragObject drag = droppedObject.GetComponent<DragObject>();
+        if (!drag.isDropped) {
+			Vector3 newDropppedObjectPosition = gameObject.transform.position;
+			newDropppedObjectPosition.x += 75;
+			droppedObject.transform.position = newDropppedObjectPosition;
+			droppedObject.transform.SetParent(canvasTran);
+			droppedObject.transform.SetAsLastSibling();
+			droppedObject.transform.localScale = Vector3.one;
+			droppedObject.GetComponent<Image>().color = Vector4.one * 0.6f;
 
-        GameObject end = GameObject.Find("end");
-		Vector3 newEndPosition = end.transform.position;
-        print(newEndPosition);
-        newEndPosition.x += 150;
-        end.transform.position = newEndPosition;
+			newConnector = Instantiate(gameObject);
+			Vector3 newConnectorPosition = gameObject.transform.position;
+			newConnectorPosition.x += 150;
+			newConnector.transform.position = newConnectorPosition;
+			newConnector.transform.SetParent(canvasTran);
+			newConnector.transform.SetAsLastSibling();
+			newConnector.transform.localScale = Vector3.one;
+			newConnector.GetComponent<Image>().color = Vector4.one;
+
+			GameObject end = GameObject.Find("end");
+			Vector3 newEndPosition = end.transform.position;
+			print(newEndPosition);
+			newEndPosition.x += 150;
+			end.transform.position = newEndPosition;
+		}
 	}
 
 	public void OnPointerExit(PointerEventData pointerEventData)
 	{
+		DragObject drag = droppedObject.GetComponent<DragObject>();
+        if (!drag.isDropped) {
+			Destroy(droppedObject);
+			Destroy(newConnector);
+			GameObject end = GameObject.Find("end");
+			Vector3 newEndPosition = end.transform.position;
+			print(newEndPosition);
+			newEndPosition.x -= 150;
+			end.transform.position = newEndPosition;
+		}
+
 		if (pointerEventData.pointerDrag == null) return;
 		image.sprite = nowSprite;
 		if (nowSprite == null)
@@ -65,15 +82,7 @@ public class DropObject : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPo
 
 	public void OnDrop(PointerEventData pointerEventData)
 	{
-        GameObject droppedObject = Instantiate(pointerEventData.pointerDrag);
-        Vector3 newDropppedObjectPosition = gameObject.transform.position;
-        newDropppedObjectPosition.x += 75;
-        droppedObject.transform.position = newDropppedObjectPosition;
-		droppedObject.transform.SetParent(canvasTran);
-		droppedObject.transform.SetAsLastSibling();
-		droppedObject.transform.localScale = Vector3.one;
 		droppedObject.GetComponent<Image>().color = Vector4.one;
-
         DragObject drag = droppedObject.GetComponent<DragObject>();
         drag.isDropped = true;
 
