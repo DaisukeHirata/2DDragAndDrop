@@ -7,8 +7,9 @@ public class DragObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
 {
 	private Transform canvasTran;
 	private GameObject draggingObject;
+    public bool isDropped;
 
-	void Awake()
+	void Start()
 	{
 		canvasTran = transform.parent;
 	}
@@ -17,6 +18,11 @@ public class DragObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
 	{
 		CreateDragObject();
 		draggingObject.transform.position = pointerEventData.position;
+
+		if (isDropped)
+		{
+			CreatePlaceholder();
+		}
 	}
 
 	public void OnDrag(PointerEventData pointerEventData)
@@ -28,6 +34,12 @@ public class DragObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
 	{
 		gameObject.GetComponent<Image>().color = Vector4.one;
 		Destroy(draggingObject);
+
+		if (isDropped)
+		{
+			Destroy(gameObject);
+		}
+
 	}
 
 	// ドラッグオブジェクト作成
@@ -51,5 +63,13 @@ public class DragObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
 		draggingImage.material = sourceImage.material;
 
 		gameObject.GetComponent<Image>().color = Vector4.one * 0.6f;
+	}
+
+    private void CreatePlaceholder() {
+		GameObject prefab = (GameObject)Resources.Load("placeholder");
+        GameObject ph = Instantiate(prefab, gameObject.transform.position, Quaternion.identity);
+		ph.transform.SetParent(canvasTran);
+		ph.transform.SetAsLastSibling();
+		ph.transform.localScale = Vector3.one;
 	}
 }

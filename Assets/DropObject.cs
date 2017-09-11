@@ -6,10 +6,12 @@ public class DropObject : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPo
 {
     public Image image;
 	private Sprite nowSprite;
+	private Transform canvasTran;
 
 	void Start()
 	{
-        image = gameObject.GetComponent<Image>();
+		canvasTran = transform.parent;
+		image = gameObject.GetComponent<Image>();
         nowSprite = image.sprite;
 	}
 
@@ -33,9 +35,16 @@ public class DropObject : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPo
 
 	public void OnDrop(PointerEventData pointerEventData)
 	{
-		Image droppedImage = pointerEventData.pointerDrag.GetComponent<Image>();
-		image.sprite = droppedImage.sprite;
-		nowSprite = droppedImage.sprite;
-		image.color = Vector4.one;
+        GameObject droppedObject = Instantiate(pointerEventData.pointerDrag);
+        droppedObject.transform.position = gameObject.transform.position;
+		droppedObject.transform.SetParent(canvasTran);
+		droppedObject.transform.SetAsLastSibling();
+		droppedObject.transform.localScale = Vector3.one;
+		droppedObject.GetComponent<Image>().color = Vector4.one;
+
+        DragObject drag = droppedObject.GetComponent<DragObject>();
+        drag.isDropped = true;
+
+        Destroy(gameObject);
 	}
 }
