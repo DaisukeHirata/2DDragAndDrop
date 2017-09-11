@@ -2,6 +2,19 @@
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
+public static class Extensions
+{
+	public static void SetTransparency(this UnityEngine.UI.Image p_image, float p_transparency)
+	{
+		if (p_image != null)
+		{
+			UnityEngine.Color __alpha = p_image.color;
+			__alpha.a = p_transparency;
+			p_image.color = __alpha;
+		}
+	}
+}
+
 [RequireComponent(typeof(Image))]
 public class DragObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
@@ -9,7 +22,7 @@ public class DragObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
 	private GameObject draggingObject;
     public bool isDropped;
 
-	void Start()
+    void Start()
 	{
 		canvasTran = transform.parent;
 	}
@@ -40,6 +53,9 @@ public class DragObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
 			Destroy(gameObject);
 		}
 
+        if (gameObject.tag == "if") {
+            print("if");
+        }
 	}
 
 	// ドラッグオブジェクト作成
