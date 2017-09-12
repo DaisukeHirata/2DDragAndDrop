@@ -21,64 +21,46 @@ public class DropObject : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPo
 	{
 		if (pointerEventData.pointerDrag == null) return;
 
-		moveRight(pointerEventData);
+		if (pointerEventData.pointerDrag.tag == "block")
+		{
+			insertBlock(pointerEventData);
+		}
 
-        //		Image droppedImage = pointerEventData.pointerDrag.GetComponent<Image>();
-        //		image.sprite = droppedImage.sprite;
-        //		image.color = Vector4.one * 0.6f;
-
-        if (pointerEventData.pointerDrag.tag == "if") {
-            makeIf(pointerEventData, 1);
+		if (pointerEventData.pointerDrag.tag == "if") 
+        {
+            insertIf(pointerEventData, 1);
         }
 	}
 
-    private void moveRight(PointerEventData pointerEventData) 
+    private void insertBlock(PointerEventData pointerEventData) 
     {
-        if (pointerEventData.pointerDrag.tag == "if") {
-            return;
-        }
+		droppedObject = Instantiate(pointerEventData.pointerDrag);
 
-        if (gameObject.tag == "placeholder" ) {
-			droppedObject = Instantiate(pointerEventData.pointerDrag);
+		DragObject drag = droppedObject.GetComponent<DragObject>();
+		if (drag.isDropped) return;
 
-			DragObject drag = droppedObject.GetComponent<DragObject>();
-			if (drag.isDropped) return;
+		int transformAmount = 75;
 
-			int transformAmount = 75;
+		Vector3 newDropppedObjectPosition = gameObject.transform.position;
+		newDropppedObjectPosition.x += transformAmount;
+		droppedObject.transform.position = newDropppedObjectPosition;
+		droppedObject.transform.SetParent(canvasTran);
+		droppedObject.transform.SetAsLastSibling();
+		droppedObject.transform.localScale = Vector3.one;
+		droppedObject.GetComponent<Image>().color = Vector4.one * 0.6f;
 
-			Vector3 newDropppedObjectPosition = gameObject.transform.position;
-			newDropppedObjectPosition.x += transformAmount;
-			droppedObject.transform.position = newDropppedObjectPosition;
-			droppedObject.transform.SetParent(canvasTran);
-			droppedObject.transform.SetAsLastSibling();
-			droppedObject.transform.localScale = Vector3.one;
-			droppedObject.GetComponent<Image>().color = Vector4.one * 0.6f;
+		newConnector = Instantiate(gameObject);
+		Vector3 newConnectorPosition = gameObject.transform.position;
+		newDropppedObjectPosition.x += transformAmount;
+        newConnector.transform.position = newDropppedObjectPosition;
+		newConnector.transform.SetParent(canvasTran);
+		newConnector.transform.SetAsLastSibling();
+		newConnector.transform.localScale = Vector3.one;
+		newConnector.GetComponent<Image>().color = Vector4.one;
 
-			newConnector = Instantiate(gameObject);
-			Vector3 newConnectorPosition = gameObject.transform.position;
-			newDropppedObjectPosition.x += transformAmount;
-            newConnector.transform.position = newDropppedObjectPosition;
-			newConnector.transform.SetParent(canvasTran);
-			newConnector.transform.SetAsLastSibling();
-			newConnector.transform.localScale = Vector3.one;
-			newConnector.GetComponent<Image>().color = Vector4.one;
-
-			GameObject end = GameObject.Find("end");
-			newDropppedObjectPosition.x += transformAmount;
-			end.transform.position = newDropppedObjectPosition;
-        } else if (gameObject.tag == "placeholder_wide") {
-			droppedObject = Instantiate(pointerEventData.pointerDrag);
-
-			DragObject drag = droppedObject.GetComponent<DragObject>();
-			if (drag.isDropped) return;
-
-			droppedObject.transform.position = gameObject.transform.position;
-			droppedObject.transform.SetParent(canvasTran);
-			droppedObject.transform.SetAsLastSibling();
-			droppedObject.transform.localScale = Vector3.one;
-			droppedObject.GetComponent<Image>().color = Vector4.one * 0.6f;
-		}
-
+		GameObject end = GameObject.Find("end");
+		newDropppedObjectPosition.x += transformAmount;
+		end.transform.position = newDropppedObjectPosition;
 	}
 
     private void makeIfPrefab(string prefabName, Vector3 position) {
@@ -89,7 +71,7 @@ public class DropObject : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPo
 		ifp1.transform.localScale = Vector3.one;
 	}
 
-    private void makeIf(PointerEventData pointerEventData, int howLong) {
+    private void insertIf(PointerEventData pointerEventData, int howLong) {
         print("makeIf");
 
         int transformAmount = 75;

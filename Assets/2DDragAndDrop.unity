@@ -360,6 +360,10 @@ Prefab:
       value: 
       objectReference: {fileID: 21300000, guid: 286e90f336e734231adcbc1bcd910f1f,
         type: 3}
+    - target: {fileID: 1577512943035408, guid: e63c25f90e2bb485e9fabbeb0dd4c073, type: 2}
+      propertyPath: m_TagString
+      value: block
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e63c25f90e2bb485e9fabbeb0dd4c073, type: 2}
   m_IsPrefabParent: 0
@@ -697,6 +701,10 @@ Prefab:
         type: 2}
       propertyPath: m_LocalScale.z
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1577512943035408, guid: e63c25f90e2bb485e9fabbeb0dd4c073, type: 2}
+      propertyPath: m_TagString
+      value: block
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e63c25f90e2bb485e9fabbeb0dd4c073, type: 2}
