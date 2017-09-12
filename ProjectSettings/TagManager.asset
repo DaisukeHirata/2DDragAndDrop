@@ -6,6 +6,7 @@ TagManager:
   tags:
   - placeholder
   - if
+  - placeholder_wide
   layers:
   - Default
   - TransparentFX

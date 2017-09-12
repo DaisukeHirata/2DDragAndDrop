@@ -34,7 +34,7 @@ public class DragObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
 
 		if (isDropped)
 		{
-			CreatePlaceholder();
+            Invoke("CreatePlaceholder", 0.1f);
 		}
 	}
 
@@ -87,5 +87,6 @@ public class DragObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
 		ph.transform.SetParent(canvasTran);
 		ph.transform.SetAsLastSibling();
 		ph.transform.localScale = Vector3.one;
+        ph.tag = "placeholder_wide";
 	}
 }

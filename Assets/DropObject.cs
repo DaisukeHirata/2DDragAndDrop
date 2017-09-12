@@ -23,19 +23,31 @@ public class DropObject : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPo
 
 		moveRight(pointerEventData);
 
-//		Image droppedImage = pointerEventData.pointerDrag.GetComponent<Image>();
-//		image.sprite = droppedImage.sprite;
-//		image.color = Vector4.one * 0.6f;
+        //		Image droppedImage = pointerEventData.pointerDrag.GetComponent<Image>();
+        //		image.sprite = droppedImage.sprite;
+        //		image.color = Vector4.one * 0.6f;
+
+        if (pointerEventData.pointerDrag.tag == "if") {
+            makeIf(pointerEventData, 1);
+        }
 	}
 
     private void moveRight(PointerEventData pointerEventData) 
     {
-		droppedObject = Instantiate(pointerEventData.pointerDrag);
+        if (pointerEventData.pointerDrag.tag == "if") {
+            return;
+        }
 
-		DragObject drag = droppedObject.GetComponent<DragObject>();
-        if (!drag.isDropped) {
+        if (gameObject.tag == "placeholder" ) {
+			droppedObject = Instantiate(pointerEventData.pointerDrag);
+
+			DragObject drag = droppedObject.GetComponent<DragObject>();
+			if (drag.isDropped) return;
+
+			int transformAmount = 75;
+
 			Vector3 newDropppedObjectPosition = gameObject.transform.position;
-			newDropppedObjectPosition.x += 75;
+			newDropppedObjectPosition.x += transformAmount;
 			droppedObject.transform.position = newDropppedObjectPosition;
 			droppedObject.transform.SetParent(canvasTran);
 			droppedObject.transform.SetAsLastSibling();
@@ -44,19 +56,68 @@ public class DropObject : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPo
 
 			newConnector = Instantiate(gameObject);
 			Vector3 newConnectorPosition = gameObject.transform.position;
-			newConnectorPosition.x += 150;
-			newConnector.transform.position = newConnectorPosition;
+			newDropppedObjectPosition.x += transformAmount;
+            newConnector.transform.position = newDropppedObjectPosition;
 			newConnector.transform.SetParent(canvasTran);
 			newConnector.transform.SetAsLastSibling();
 			newConnector.transform.localScale = Vector3.one;
 			newConnector.GetComponent<Image>().color = Vector4.one;
 
 			GameObject end = GameObject.Find("end");
-			Vector3 newEndPosition = end.transform.position;
-			print(newEndPosition);
-			newEndPosition.x += 150;
-			end.transform.position = newEndPosition;
+			newDropppedObjectPosition.x += transformAmount;
+			end.transform.position = newDropppedObjectPosition;
+        } else if (gameObject.tag == "placeholder_wide") {
+			droppedObject = Instantiate(pointerEventData.pointerDrag);
+
+			DragObject drag = droppedObject.GetComponent<DragObject>();
+			if (drag.isDropped) return;
+
+			droppedObject.transform.position = gameObject.transform.position;
+			droppedObject.transform.SetParent(canvasTran);
+			droppedObject.transform.SetAsLastSibling();
+			droppedObject.transform.localScale = Vector3.one;
+			droppedObject.GetComponent<Image>().color = Vector4.one * 0.6f;
 		}
+
+	}
+
+    private void makeIfPrefab(string prefabName, Vector3 position) {
+        GameObject p1 = (GameObject)Resources.Load(prefabName);
+		GameObject ifp1 = Instantiate(p1, position, Quaternion.identity);
+		ifp1.transform.SetParent(canvasTran);
+		ifp1.transform.SetAsLastSibling();
+		ifp1.transform.localScale = Vector3.one;
+	}
+
+    private void makeIf(PointerEventData pointerEventData, int howLong) {
+        print("makeIf");
+
+        int transformAmount = 75;
+
+		droppedObject = Instantiate(pointerEventData.pointerDrag);
+		Vector3 ifPosition = gameObject.transform.position;
+		ifPosition.x += transformAmount;
+		droppedObject.transform.position = ifPosition;
+		droppedObject.transform.SetParent(canvasTran);
+		droppedObject.transform.SetAsLastSibling();
+		droppedObject.transform.localScale = Vector3.one;
+		droppedObject.GetComponent<Image>().color = Vector4.one * 0.6f;
+
+		ifPosition.x += transformAmount;
+		makeIfPrefab("if-open", ifPosition);
+
+        for (int i = 0; i < howLong; i++) {
+			ifPosition.x += transformAmount;
+			makeIfPrefab("if-clauses", ifPosition);
+		}
+
+		ifPosition.x += transformAmount;
+		makeIfPrefab("if-close", ifPosition);
+
+        // this should not be here. move this to other function
+		GameObject end = GameObject.Find("end");
+		ifPosition.x += transformAmount;
+		end.transform.position = ifPosition;
 	}
 
 	public void OnPointerExit(PointerEventData pointerEventData)
@@ -67,7 +128,6 @@ public class DropObject : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPo
 			Destroy(newConnector);
 			GameObject end = GameObject.Find("end");
 			Vector3 newEndPosition = end.transform.position;
-			print(newEndPosition);
 			newEndPosition.x -= 150;
 			end.transform.position = newEndPosition;
 		}
