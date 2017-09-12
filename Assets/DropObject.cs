@@ -72,8 +72,6 @@ public class DropObject : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPo
 	}
 
     private void insertIf(PointerEventData pointerEventData, int howLong) {
-        print("makeIf");
-
         int transformAmount = 75;
 
 		droppedObject = Instantiate(pointerEventData.pointerDrag);
@@ -88,7 +86,8 @@ public class DropObject : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPo
 		ifPosition.x += transformAmount;
 		makeIfPrefab("if-open", ifPosition);
 
-        for (int i = 0; i < howLong; i++) {
+        for (int i = 0; i < howLong; i++) 
+        {
 			ifPosition.x += transformAmount;
 			makeIfPrefab("if-clauses", ifPosition);
 		}
@@ -105,7 +104,8 @@ public class DropObject : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPo
 	public void OnPointerExit(PointerEventData pointerEventData)
 	{
 		DragObject drag = droppedObject.GetComponent<DragObject>();
-        if (!drag.isDropped) {
+        if (!drag.isDropped) 
+        {
 			Destroy(droppedObject);
 			Destroy(newConnector);
 			GameObject end = GameObject.Find("end");

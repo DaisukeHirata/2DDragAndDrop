@@ -34,7 +34,7 @@ public class DragObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
 
 		if (isDropped)
 		{
-            Invoke("CreatePlaceholder", 0.1f);
+            CreateSpace();
 		}
 	}
 
@@ -81,12 +81,11 @@ public class DragObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
 		gameObject.GetComponent<Image>().color = Vector4.one * 0.6f;
 	}
 
-    private void CreatePlaceholder() {
-		GameObject prefab = (GameObject)Resources.Load("placeholder");
+    private void CreateSpace() {
+		GameObject prefab = (GameObject)Resources.Load("space");
         GameObject ph = Instantiate(prefab, gameObject.transform.position, Quaternion.identity);
 		ph.transform.SetParent(canvasTran);
 		ph.transform.SetAsLastSibling();
 		ph.transform.localScale = Vector3.one;
-        ph.tag = "placeholder_wide";
 	}
 }

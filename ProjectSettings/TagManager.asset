@@ -8,6 +8,7 @@ TagManager:
   - if
   - placeholder_wide
   - block
+  - space
   layers:
   - Default
   - TransparentFX
