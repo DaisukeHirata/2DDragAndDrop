@@ -2,29 +2,15 @@
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public static class Extensions
-{
-	public static void SetTransparency(this UnityEngine.UI.Image p_image, float p_transparency)
-	{
-		if (p_image != null)
-		{
-			UnityEngine.Color __alpha = p_image.color;
-			__alpha.a = p_transparency;
-			p_image.color = __alpha;
-		}
-	}
-}
-
 [RequireComponent(typeof(Image))]
 public class DragObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
 	private Transform canvasTran;
 	private GameObject draggingObject;
-    public bool isDropped;
 
     void Start()
 	{
-		canvasTran = transform.parent;
+		canvasTran = GameObject.Find("Panel").transform;
 	}
 
 	public void OnBeginDrag(PointerEventData pointerEventData)
@@ -32,10 +18,7 @@ public class DragObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
 		CreateDragObject();
 		draggingObject.transform.position = pointerEventData.position;
 
-		if (isDropped)
-		{
-            CreateSpace();
-		}
+        if (isDropped()) removingDroppedEnvelope();
 	}
 
 	public void OnDrag(PointerEventData pointerEventData)
@@ -45,20 +28,51 @@ public class DragObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
 
 	public void OnEndDrag(PointerEventData pointerEventData)
 	{
-		gameObject.GetComponent<Image>().color = Vector4.one;
 		Destroy(draggingObject);
 
-		if (isDropped)
-		{
-			Destroy(gameObject);
-		}
-
-        if (gameObject.tag == "if") {
+		if (gameObject.tag == "if") 
+        {
             print("if");
         }
+
+        if (isDropped()) removeDroppedEnvelope();
 	}
 
-	// ドラッグオブジェクト作成
+    private void removingDroppedEnvelope() 
+    {
+		GameObject parent = transform.parent.gameObject;
+		CanvasGroup canvasGroup = parent.GetComponent<CanvasGroup>();
+		canvasGroup.alpha = 0.3f;
+	}
+
+    private void removeDroppedEnvelope() 
+    {
+		GameObject parent = transform.parent.gameObject;
+		GameObject end = GameObject.Find("end");
+		Vector3 newEndPosition = end.transform.position;
+		switch (parent.tag)
+		{
+			case "if":
+				newEndPosition.x -= 300;
+				break;
+			case "block":
+				newEndPosition.x -= 150;
+				break;
+		}
+		end.transform.position = newEndPosition;
+		Destroy(parent);
+	}
+
+    private bool isDropped() {
+		GameObject parent = transform.parent.gameObject;
+		DroppingObject dropping = parent.GetComponent<DroppingObject>();
+        if (dropping != null && dropping.isDropped) {
+            return true;
+        } else {
+            return false;
+		}
+ 	}
+
 	private void CreateDragObject()
 	{
 		draggingObject = new GameObject("Dragging Object");
@@ -66,7 +80,6 @@ public class DragObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
 		draggingObject.transform.SetAsLastSibling();
 		draggingObject.transform.localScale = Vector3.one;
 
-		// レイキャストがブロックされないように
 		CanvasGroup canvasGroup = draggingObject.AddComponent<CanvasGroup>();
 		canvasGroup.blocksRaycasts = false;
 
