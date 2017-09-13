@@ -29,6 +29,7 @@ public class DragObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
 	public void OnEndDrag(PointerEventData pointerEventData)
 	{
 		Destroy(draggingObject);
+		gameObject.GetComponent<Image>().color = Vector4.one;
 
 		if (gameObject.tag == "if") 
         {
