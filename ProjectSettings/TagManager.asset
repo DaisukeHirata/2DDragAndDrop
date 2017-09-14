@@ -6,9 +6,12 @@ TagManager:
   tags:
   - placeholder
   - if
-  - placeholder_wide
   - block
   - space
+  - if-top-left
+  - if-bottom-left
+  - if-top-right
+  - if-bottom-right
   layers:
   - Default
   - TransparentFX

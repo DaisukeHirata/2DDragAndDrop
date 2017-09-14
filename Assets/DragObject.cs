@@ -49,18 +49,15 @@ public class DragObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
     private void removeDroppedEnvelope() 
     {
 		GameObject parent = transform.parent.gameObject;
-		GameObject end = GameObject.Find("end");
-		Vector3 newEndPosition = end.transform.position;
 		switch (parent.tag)
 		{
 			case "if":
-				newEndPosition.x -= 300;
+				moveFollowingObjects(parent.transform, -300);
 				break;
 			case "block":
-				newEndPosition.x -= 150;
+				moveFollowingObjects(parent.transform, -150);
 				break;
 		}
-		end.transform.position = newEndPosition;
 		Destroy(parent);
 	}
 
@@ -101,5 +98,20 @@ public class DragObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
 		ph.transform.SetParent(canvasTran);
 		ph.transform.SetAsLastSibling();
 		ph.transform.localScale = Vector3.one;
+	}
+
+	private void moveFollowingObjects(Transform origin, int movingAmount)
+	{
+		int originIndex = origin.GetSiblingIndex();
+
+		var myself = transform;
+		var parent = origin.parent;
+		var childCount = parent.childCount;
+		for (int i = originIndex + 1; i < childCount; i++)
+		{
+			var currentPosition = parent.GetChild(i).transform.position;
+			currentPosition.x += movingAmount;
+			parent.GetChild(i).transform.position = currentPosition;
+		}
 	}
 }
