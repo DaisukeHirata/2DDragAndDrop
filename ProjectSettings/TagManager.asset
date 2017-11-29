@@ -12,6 +12,7 @@ TagManager:
   - if-bottom-left
   - if-top-right
   - if-bottom-right
+  - connector
   layers:
   - Default
   - TransparentFX

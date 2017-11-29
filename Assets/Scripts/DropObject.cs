@@ -86,9 +86,9 @@ public class DropObject : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPo
 		switch (gameObject.tag)
 		{
 			case "if-top-left":
-                GameObject next = getNext().gameObject;
-                if (next.tag == "space") {
-                    Destroy(next);
+                GameObject trueBlock = getIfBlock(true).gameObject;
+                if (trueBlock.tag == "space") {
+                    Destroy(trueBlock);
                 }
 				break;
 			case "placeholder":
@@ -157,6 +157,18 @@ public class DropObject : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPo
 				return parent.GetChild(i + 1);
 		}
 		return null;
+	}
+
+    private Transform getIfBlock(bool isTrueBlock) {
+		var myself = transform;
+		var parent = transform.parent;
+		var grandParent = parent.transform.parent;
+        var ifBlocks = grandParent.GetChild(2);
+        if (isTrueBlock) {
+            return ifBlocks.GetChild(0);
+        } else {
+			return ifBlocks.GetChild(1);
+		}
 	}
 
     private void moveFollowingObjects(Transform origin, int movingAmount) 
